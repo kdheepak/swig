@@ -15,6 +15,7 @@
 
 #include <ctype.h>
 
+/* required for SWIG help */
 static const char *usage = "\
 \
 JULIA Options (available with -julia)\n\
@@ -22,6 +23,8 @@ JULIA Options (available with -julia)\n\
 \n";
 
 
+/* required for Julia SWIG module */
+static File *out = 0;
 static const char *julia_path = "julia";
 
 class JULIA:public Language {
@@ -31,6 +34,38 @@ public:
   virtual int top(Node *n);
 
 };
+
+
+void JULIA::main(int argc, char *argv[]) {
+
+    int i;
+
+    SWIG_library_directory(julia_path);
+    // TODO: Look for certain command line options
+    for (i = 1; i < argc; i++) {
+
+    }
+    Preprocessor_define("SWIGJULIA 1", 0);
+
+    SWIG_typemap_lang("julia");
+    // Read in default typemaps */
+    // SWIG_config_file("julia.swg");
+
+}
+
+int JULIA::top(Node *n) {
+    if (out == 0) {
+      String *outfile = Getattr(n, "outfile");
+      Replaceall(outfile, "_wrap.cxx", ".jl");
+      Replaceall(outfile, "_wrap.c", ".jl");
+      out = NewFile(outfile, "w", SWIG_output_files());
+      if (!out) {
+          FileErrorDisplay(outfile);
+          SWIG_exit(EXIT_FAILURE);
+      }
+    }
+
+}
 
 /* -----------------------------------------------------------------------
  * swig_julia()    - Instantiate module
@@ -46,10 +81,3 @@ extern "C" {
   }
 }
 
-void JULIA::main(int argc, char *argv[]) {
-
-}
-
-int JULIA::top(Node *n) {
-
-}

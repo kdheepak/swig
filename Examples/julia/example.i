@@ -4,7 +4,7 @@
 /* Put headers and other declarations here */
 %}
 
-%include typemaps.i
+/* %include typemaps.i */
 
 %rename(mod) my_mod;
 
