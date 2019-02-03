@@ -170,6 +170,9 @@ Examples/ocaml/**/*.cm*
 Examples/ocaml/**/swig.ml*
 Examples/ocaml/**/swigp4.ml
 
+# Javascript
+Examples/julia/*.jl
+
 # Octave
 swigexample*.oct
 Examples/test-suite/octave/*.oct
