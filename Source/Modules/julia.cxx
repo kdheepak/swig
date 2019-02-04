@@ -11,6 +11,7 @@
  * Julia language module for SWIG.
  * ----------------------------------------------------------------------------- */
 
+#include <iostream>
 #include "swigmod.h"
 
 #include <ctype.h>
@@ -24,7 +25,7 @@ JULIA Options (available with -julia)\n\
 
 
 /* required for Julia SWIG module */
-static File *out = 0;
+static File *out_c = 0;
 static const char *julia_path = "julia";
 
 class JULIA:public Language {
@@ -54,16 +55,19 @@ void JULIA::main(int argc, char *argv[]) {
 }
 
 int JULIA::top(Node *n) {
-    if (out == 0) {
+    if (out_c == 0) {
       String *outfile = Getattr(n, "outfile");
-      Replaceall(outfile, "_wrap.cxx", ".jl");
-      Replaceall(outfile, "_wrap.c", ".jl");
-      out = NewFile(outfile, "w", SWIG_output_files());
-      if (!out) {
+      // Replaceall(outfile, "_wrap.cxx", ".jl");
+      // Replaceall(outfile, "_wrap.c", ".jl");
+      out_c = NewFile(outfile, "w", SWIG_output_files());
+      if (!out_c) {
           FileErrorDisplay(outfile);
           SWIG_exit(EXIT_FAILURE);
       }
     }
+    Swig_banner(out_c);
+
+    Language::top(n);
 
 }
 
